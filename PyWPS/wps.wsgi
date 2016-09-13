@@ -25,13 +25,14 @@
 import os
 import sys
 
+activate_this = os.path.join('/osgeo/demo.pywps.org/bin/activate_this.py')
+execfile(activate_this, {"__file__":activate_this})
+sys.path.append('/osgeo/demo.pywps.org/PyWPS')
 from pywps.app import Service
 
 from cite.processes import HelloWorld
 
-os.environ['PYWPS_CFG'] = 'cite/cite.cfg'
-
-application = Service(processes=[HelloWorld()])
+application = Service(processes=[HelloWorld()], cfgfiles=['/osgeo/demo.pywps.org/PyWPS/cite/cite.cfg'])
 
 if __name__ == '__main__':  # run inline using WSGI reference implementation
     from wsgiref.simple_server import make_server
