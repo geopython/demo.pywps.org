@@ -12,5 +12,8 @@
   # PyWPS configurations
   # CITE
   WSGIScriptAlias /cite/wps /osgeo/demo.pywps.org/PyWPS/wps.wsgi
+  WSGIScriptAlias /deploy /osgeo/demo.pywps.org/PyWPS/webhook-deploy.wsgi
   SetEnvIf Request_URI "/cite/wps" PYWPS_CFG=/osgeo/demo.pywps.org/PyWPS/cite/cite.cfg
+
+  SetEnv DEMO_PYWPS_ORG_SECRET_KEY TBD
 </VirtualHost>
