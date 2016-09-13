@@ -11,6 +11,6 @@
 
   # PyWPS configurations
   # CITE
-  WSGIScriptAlias /cite/wps /osgeo/demo.pywps.org/PyWPS/cite/wps.wsgi
+  WSGIScriptAlias /cite/wps /osgeo/demo.pywps.org/PyWPS/wps.wsgi
   SetEnvIf Request_URI "/cite/wps" PYWPS_CFG=/osgeo/demo.pywps.org/PyWPS/cite/cite.cfg
 </VirtualHost>
