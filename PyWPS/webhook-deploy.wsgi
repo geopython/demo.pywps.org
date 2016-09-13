@@ -32,7 +32,6 @@ import subprocess
 BASEDIR = '/osgeo/demo.pywps.org'
 PYTHON = os.path.join(BASEDIR, 'bin', 'python')
 SOURCE_CODE = os.path.join(BASEDIR, 'src', 'pywps')
-REPOSITORY_NAME = 'geopython/pywps'
 PYWPS_WSGI = os.path.join(BASEDIR, 'PyWPS', 'wps.wsgi')
 
 activate_this = os.path.join(BASEDIR, 'bin', 'activate_this.py')
@@ -83,20 +82,24 @@ def application(environ, start_response):
         error = 1
 
     if error == 0:
-        if all([is_valid_secret(secret_key, signature, payload),
-                request['repository']['full_name'] == REPOSITORY_NAME,
-                not request['repository']['fork']]):
-            # update master, install library  and touch .wsgi file to
+        if (is_valid_secret(secret_key, signature, payload) and
+            not request['repository']['fork']):
             # trigger deployment update
-            os.chdir(SOURCE_CODE)
-            subprocess.call(['git', 'pull', 'origin', 'master'])
-            subprocess.call([PYTHON, 'setup.py', 'install'])
-            subprocess.call(['touch', PYWPS_WSGI])
+            if request['repository']['full_name'] == 'geopython/pywps':
+                # update master, install library  and touch .wsgi file to
+                os.chdir(SOURCE_CODE)
+                subprocess.call(['git', 'pull', 'origin', 'master'])
+                subprocess.call([PYTHON, 'setup.py', 'install'])
+                subprocess.call(['touch', PYWPS_WSGI])
+            elif request['repository']['full_name'] == 'geopython/demo.pywps.org':
+                os.chdir(BASEDIR)
+                subprocess.call(['git', 'pull', 'origin', 'master'])
+                subprocess.call(['touch', PYWPS_WSGI])
 
             if 'head_commit' in request:
-                message = 'Repository successfully updated to {}'.format(request['head_commit']['id'])
+                message = 'Repository {} successfully updated to {}'.format(request['repository']['full_name'], request['head_commit']['id'])
             else:
-                message = 'Repository successfully updated to latest master'
+                message = 'Repository {} successfully updated to latest master'.format(request['repository']['full_name'])
 
             response = {
                 'status': '200 OK',
