@@ -62,7 +62,7 @@ def is_valid_secret(secret_server, secret, payload):
 
 
 def application(environ, start_response):
-    """WSGI application to update PyWPS master"""
+    """WSGI application to update PyWPS develop"""
 
     error = 0
     response = {
@@ -86,20 +86,20 @@ def application(environ, start_response):
             not request['repository']['fork']):
             # trigger deployment update
             if request['repository']['full_name'] == 'geopython/pywps':
-                # update master, install library  and touch .wsgi file to
+                # update develop, install library  and touch .wsgi file to
                 os.chdir(SOURCE_CODE)
-                subprocess.call(['git', 'pull', 'origin', 'master'])
+                subprocess.call(['git', 'pull', 'origin', 'develop'])
                 subprocess.call([PYTHON, 'setup.py', 'install'])
                 subprocess.call(['touch', PYWPS_WSGI])
             elif request['repository']['full_name'] == 'geopython/demo.pywps.org':
                 os.chdir(BASEDIR)
-                subprocess.call(['git', 'pull', 'origin', 'master'])
+                subprocess.call(['git', 'pull', 'origin', 'develop'])
                 subprocess.call(['touch', PYWPS_WSGI])
 
             if 'head_commit' in request:
                 message = 'Repository {} successfully updated to {}'.format(request['repository']['full_name'], request['head_commit']['id'])
             else:
-                message = 'Repository {} successfully updated to latest master'.format(request['repository']['full_name'])
+                message = 'Repository {} successfully updated to latest develop'.format(request['repository']['full_name'])
 
             response = {
                 'status': '200 OK',
